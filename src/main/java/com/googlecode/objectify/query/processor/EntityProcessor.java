@@ -1,7 +1,6 @@
 package com.googlecode.objectify.query.processor;
 
 import static javax.lang.model.SourceVersion.RELEASE_6;
-import javax.lang.model.util.*;
 
 import java.io.BufferedWriter;
 import java.io.PrintWriter;
@@ -17,7 +16,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import com.googlecode.objectify.annotation.Entity;
@@ -174,15 +172,37 @@ public class EntityProcessor extends AbstractProcessor {
       out.println("    return this;");
       out.println("  }");
       out.println();
+      out.println("  @Deprecated");
       out.println("  @Override");
       out.println("  public int countAll() {");
       out.println("    return this.query.countAll();");
       out.println("  }");
       out.println();
+      out.println("  @Deprecated");
       out.println("  @Override");
       out.println("  public " + queryName + " cursor(Cursor value) {");
       out.println("    this.query.cursor(value);");
       out.println("    return this;");
+      out.println("  }");
+      out.println();
+      out.println("  @Override");
+      out.println("  public int count() {");
+      out.println("    return this.query.count();");
+      out.println("  }");
+      out.println();
+      out.println("  @Override");
+      out.println("  public Query<" + entityName + "> endCursor(Cursor value) {");
+      out.println("    return this.query.endCursor(value);");
+      out.println("  }");
+      out.println();
+      out.println("  @Override");
+      out.println("  public Query<" + entityName + "> startCursor(Cursor value) {");
+      out.println("    return this.query.startCursor(value);");
+      out.println("  }");
+      out.println();
+      out.println("  @Override");
+      out.println("  public Query<" + entityName + "> clone() {");
+      out.println("    return this.query.clone();");
       out.println("  }");
       out.println();
       out.println("  @Deprecated");
@@ -258,7 +278,7 @@ public class EntityProcessor extends AbstractProcessor {
       out.println("  public ListPage<" + entityName
           + "> list(String cursor, int pageSize) {");
       out.println("    if (cursor != null) {");
-      out.println("      this.query.cursor(Cursor.fromWebSafeString(cursor));");
+      out.println("      this.query.startCursor(Cursor.fromWebSafeString(cursor));");
       out.println("    }");
       out.println("    QueryResultIterator<" + entityName
           + "> iterator = this.query.iterator();");
@@ -276,7 +296,7 @@ public class EntityProcessor extends AbstractProcessor {
       out.println("  public ListPage<Key<" + entityName
           + ">> listKeys(String cursor, int pageSize) {");
       out.println("    if (cursor != null) {");
-      out.println("      this.query.cursor(Cursor.fromWebSafeString(cursor));");
+      out.println("      this.query.startCursor(Cursor.fromWebSafeString(cursor));");
       out.println("    }");
 
       out.println("    QueryResultIterator<Key<" + entityName
@@ -301,7 +321,7 @@ public class EntityProcessor extends AbstractProcessor {
             + "> listParents(String cursor, int pageSize) {");
         out.println();
         out.println("    if (cursor != null) {");
-        out.println("      this.query.cursor(Cursor.fromWebSafeString(cursor));");
+        out.println("      this.query.startCursor(Cursor.fromWebSafeString(cursor));");
         out.println("    }");
         out.println("    QueryResultIterator<Key<" + entityName
             + ">> iterator = this.query.fetchKeys().iterator();");
@@ -323,7 +343,7 @@ public class EntityProcessor extends AbstractProcessor {
             + ">> listParentKeys(String cursor, int pageSize) {");
         out.println();
         out.println("    if (cursor != null) {");
-        out.println("      this.query.cursor(Cursor.fromWebSafeString(cursor));");
+        out.println("      this.query.startCursor(Cursor.fromWebSafeString(cursor));");
         out.println("    }");
         out.println("    QueryResultIterator<Key<" + entityName
             + ">> iterator = this.query.fetchKeys().iterator();");
@@ -368,7 +388,7 @@ public class EntityProcessor extends AbstractProcessor {
                 + "Keys(String cursor, int pageSize) {");
             out.println();
             out.println("    if (cursor != null) {");
-            out.println("      this.query.cursor(Cursor.fromWebSafeString(cursor));");
+            out.println("      this.query.startCursor(Cursor.fromWebSafeString(cursor));");
             out.println("    }");
             out.println("    QueryResultIterator<" + entityName
                 + "> iterator = query.iterator();");
@@ -389,7 +409,7 @@ public class EntityProcessor extends AbstractProcessor {
             out.println("  public ListPage<" + returnType + "> list"
                 + listField.pluralName() + "(String cursor, int pageSize) {");
             out.println("    if (cursor != null) {");
-            out.println("      this.query.cursor(Cursor.fromWebSafeString(cursor));");
+            out.println("      this.query.startCursor(Cursor.fromWebSafeString(cursor));");
             out.println("    }");
             out.println("    QueryResultIterator<" + entityName
                 + "> iterator = query.iterator();");
@@ -409,6 +429,7 @@ public class EntityProcessor extends AbstractProcessor {
                 + ">(new ArrayList<" + returnType + ">(");
             out.println("      list.values()), iterator.getCursor().toWebSafeString(), more);");
             out.println("  }");
+            
           }
         }
       }
@@ -420,6 +441,7 @@ public class EntityProcessor extends AbstractProcessor {
       out.println("    }");
       out.println("    return this.lazyOfy;");
       out.println("  }");
+      out.println();
 
       out.println("}");
 
