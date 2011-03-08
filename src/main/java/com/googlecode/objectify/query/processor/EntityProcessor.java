@@ -17,6 +17,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import com.googlecode.objectify.annotation.Entity;
@@ -136,9 +137,9 @@ public class EntityProcessor extends AbstractProcessor {
         } else if (unindexedClass != null && indexedField == null) {
           // @Unindexed class and field is not @Indexed
         } else {          
-          String fieldName = fieldElement.getSimpleName().toString();                    
-          String fieldType = fieldElement.asType().toString();
-
+          String fieldName = fieldElement.getSimpleName().toString();                              
+          String fieldType = env.getTypeUtils().asMemberOf((DeclaredType)entityElement.asType(), fieldElement).toString();
+          
           out.println("  public " + queryName + " filterBy"
               + fieldName.substring(0, 1).toUpperCase()
               + fieldName.substring(1) + "(" + fieldType + " " + fieldName
@@ -291,7 +292,7 @@ public class EntityProcessor extends AbstractProcessor {
       out.println("  }");
 
       if (parentField != null) {
-        String fieldType = parentField.asType().toString();
+        String fieldType = env.getTypeUtils().asMemberOf((DeclaredType)entityElement.asType(), parentField).toString();
         fieldType = fieldType.substring(fieldType.indexOf('<') + 1,
             fieldType.lastIndexOf('>'));
 
