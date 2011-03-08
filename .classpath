@@ -1,8 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="gwt-user-2.0.0.jar"/>
-	<classpathentry kind="lib" path="objectify-2.2.1.jar"/>
-	<classpathentry kind="output" path="bin"/>
+  <classpathentry kind="src" path="src/main/java"/>
+  <classpathentry kind="src" path="src/main/resources" including="**/*.gwt.xml" excluding="**/*.java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/com/google/gwt/gwt-dev/2.2.0/gwt-dev-2.2.0.jar" sourcepath="M2_REPO/com/google/gwt/gwt-dev/2.2.0/gwt-dev-2.2.0-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/brendan/.m2/repository/com/google/gwt/gwt-dev/2.2.0/gwt-dev-2.2.0-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/com/google/gwt/gwt-user/2.2.0/gwt-user-2.2.0.jar" sourcepath="M2_REPO/com/google/gwt/gwt-user/2.2.0/gwt-user-2.2.0-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/brendan/.m2/repository/com/google/gwt/gwt-user/2.2.0/gwt-user-2.2.0-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/com/googlecode/objectify/objectify/2.2.2/objectify-2.2.2.jar" sourcepath="M2_REPO/com/googlecode/objectify/objectify/2.2.2/objectify-2.2.2-sources.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 </classpath>
