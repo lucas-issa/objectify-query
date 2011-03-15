@@ -446,7 +446,7 @@ public class EntityProcessor extends AbstractProcessor {
       out.println("}");
 
     } catch (java.io.IOException e) {
-      throw new RuntimeException("Query already exists or cannot be created");
+      throw new RuntimeException(e);
     } finally {
       if (out != null) {
         out.close();
