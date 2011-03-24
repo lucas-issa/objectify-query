@@ -17,6 +17,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.ElementFilter;
+import javax.tools.Diagnostic.Kind;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Indexed;
@@ -80,27 +81,26 @@ public class EntityProcessor extends AbstractProcessor {
       out = new PrintWriter(
           new BufferedWriter(this.env.getFiler().createSourceFile(queryQName,
               entityElement).openWriter()));
+      
+      // this.env.getMessager().printMessage(Kind.ERROR, entityName);
 
       out.println("package " + queryPackageName + ";");
       out.println();
       out.println("import java.util.ArrayList;");
-      out.println("import java.util.List;");
       out.println("import java.util.Map;");
-      out.println("import java.util.Set;");
       out.println();
       out.println("import com.google.appengine.api.datastore.Cursor;");
-      out.println("import com.google.appengine.api.datastore.QueryResultIterable;");
       out.println("import com.google.appengine.api.datastore.QueryResultIterator;");
       out.println("import com.googlecode.objectify.Key;");
       out.println("import com.googlecode.objectify.Objectify;");
       out.println("import com.googlecode.objectify.ObjectifyOpts;");
       out.println("import com.googlecode.objectify.ObjectifyService;");
-
       out.println("import com.googlecode.objectify.Query;");
+      out.println("import com.googlecode.objectify.helper.QueryWrapper;");
       out.println("import com.googlecode.objectify.query.shared.ListPage;");
       out.println("import " + entityPackageName + "." + entityName + ";");
       out.println();
-      out.println("public class " + queryName + " implements Query<"
+      out.println("public class " + queryName + " extends QueryWrapper<"
           + entityName + "> { ");
       out.println();
       out.println("private final Query<" + entityName + "> query;");
@@ -108,6 +108,7 @@ public class EntityProcessor extends AbstractProcessor {
       out.println();
       out.println("  public " + queryName + "(Query<" + entityName
           + "> query) {");
+      out.println("    super(query);");
       out.println("    this.query = query;");
       out.println("  }");
       out.println();
@@ -166,115 +167,6 @@ public class EntityProcessor extends AbstractProcessor {
         }
       }
 
-      out.println("  @Override");
-      out.println("  public " + queryName + " ancestor(Object keyOrEntity) {");
-      out.println("    this.query.ancestor(keyOrEntity);");
-      out.println("    return this;");
-      out.println("  }");
-      out.println();
-      out.println("  @Deprecated");
-      out.println("  @Override");
-      out.println("  public int countAll() {");
-      out.println("    return this.query.countAll();");
-      out.println("  }");
-      out.println();
-      out.println("  @Deprecated");
-      out.println("  @Override");
-      out.println("  public " + queryName + " cursor(Cursor value) {");
-      out.println("    this.query.cursor(value);");
-      out.println("    return this;");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public int count() {");
-      out.println("    return this.query.count();");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public Query<" + entityName + "> endCursor(Cursor value) {");
-      out.println("    return this.query.endCursor(value);");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public Query<" + entityName + "> startCursor(Cursor value) {");
-      out.println("    return this.query.startCursor(value);");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public Query<" + entityName + "> clone() {");
-      out.println("    return this.query.clone();");
-      out.println("  }");
-      out.println();
-      out.println("  @Deprecated");
-      out.println("  @Override");
-      out.println("  public QueryResultIterable<" + entityName + "> fetch() {");
-      out.println("    return this.query.fetch();");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public QueryResultIterable<Key<" + entityName
-          + ">> fetchKeys() {");
-      out.println("    return this.query.fetchKeys();");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public <V> Set<Key<V>> fetchParentKeys() {");
-      out.println("    return this.query.fetchParentKeys();");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public <V> Map<Key<V>, V> fetchParents() {");
-      out.println("    return this.query.fetchParents();");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public Query<" + entityName
-          + "> filter(String condition, Object value) {");
-      out.println("    return this.query.filter(condition, value);");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public " + entityName + " get() {");
-      out.println("    return this.query.get();");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public Key<" + entityName + "> getKey() {");
-      out.println("    return this.query.getKey();");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public Query<" + entityName + "> limit(int value) {");
-      out.println("    return new " + queryName + "(this.query.limit(value));");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public List<" + entityName + "> list() {");
-      out.println("    return this.query.list();");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public List<Key<" + entityName + ">> listKeys() {");
-      out.println("    return this.query.listKeys();");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public " + queryName + " offset(int value) {");
-      out.println("    return new " + queryName + "(this.query.offset(value));");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public " + queryName + " order(String condition) {");
-      out.println("    return new " + queryName
-          + "(this.query.order(condition));");
-      out.println("  }");
-      out.println();
-      out.println("  @Override");
-      out.println("  public QueryResultIterator<" + entityName
-          + "> iterator() {");
-      out.println("    return this.query.iterator();");
-      out.println("  }");
-      out.println();
       out.println("  public ListPage<" + entityName
           + "> list(String cursor, int pageSize) {");
       out.println("    if (cursor != null) {");
@@ -311,6 +203,7 @@ public class EntityProcessor extends AbstractProcessor {
           + ">>(list, iterator.getCursor().toWebSafeString(), more);");
       out.println("  }");
 
+      
       if (parentField != null) {
         String fieldType = env.getTypeUtils().asMemberOf((DeclaredType)entityElement.asType(), parentField).toString();
         fieldType = fieldType.substring(fieldType.indexOf('<') + 1,
@@ -446,6 +339,7 @@ public class EntityProcessor extends AbstractProcessor {
       out.println("}");
 
     } catch (java.io.IOException e) {
+      this.env.getMessager().printMessage(Kind.ERROR, e.toString());
       throw new RuntimeException(e);
     } finally {
       if (out != null) {

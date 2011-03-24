@@ -9,10 +9,18 @@
 	<properties>
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<gwt-maven-plugin.version>2.2.0</gwt-maven-plugin.version>
+		<maven-resources-plugin.version>2.4.2</maven-resources-plugin.version>
+
 		<objectify-appengine.version>2.2.2</objectify-appengine.version>
 		<gwt.version>2.2.0</gwt.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>objectify-appengine</id>
+			<url>http://objectify-appengine.googlecode.com/svn/maven</url>
+		</repository>
+	</repositories>
 
 	<build>
 
@@ -45,46 +53,28 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<compilerArgument>-proc:none</compilerArgument>
+					<proc>none</proc>
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>${gwt-maven-plugin.version}</version>
-			</plugin>
 		</plugins>
 	</build>
 
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>gwtplatform.plugin</id>
-			<name>Gwtplatform custom plugin epository</name>
-			<url>http://maven.gwt-platform.googlecode.com/hg/</url>
-			<layout>default</layout>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<dependencies>
+
 		<dependency>
 			<groupId>com.googlecode.objectify</groupId>
 			<artifactId>objectify</artifactId>
 			<version>${objectify-appengine.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwt.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
 
-	<repositories>
-		<repository>
-			<id>objectify-appengine</id>
-			<url>http://objectify-appengine.googlecode.com/svn/maven</url>
-		</repository>
-	</repositories>
 </project>

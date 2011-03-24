@@ -3,3 +3,4 @@ syntax: regexp
 ^bin$
 syntax: regexp
 ^target$
+.classpath
