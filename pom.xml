@@ -7,9 +7,9 @@
 	<version>0.1-SNAPSHOT</version>
 
 	<properties>
+		<target.jdk>1.6</target.jdk>
+
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-		<gwt-maven-plugin.version>2.2.0</gwt-maven-plugin.version>
-		<maven-resources-plugin.version>2.4.2</maven-resources-plugin.version>
 
 		<objectify-appengine.version>2.2.2</objectify-appengine.version>
 		<gwt.version>2.2.0</gwt.version>
@@ -23,7 +23,7 @@
 	</repositories>
 
 	<build>
-
+	
 		<resources>
 			<!--
 				bundle sources with the jar, so they are visible to GWT's compiler
@@ -42,9 +42,11 @@
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>**/*.gwt.xml</include>
+					<include>META-INF/services/javax.annotation.processing.Processor</include>
 				</includes>
 			</resource>
 		</resources>
+	
 
 		<plugins>
 			<!-- Disable annotation processors during normal compilation -->
@@ -54,6 +56,8 @@
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<proc>none</proc>
+					<source>${target.jdk}</source>
+					<target>${target.jdk}</target>
 				</configuration>
 			</plugin>
 
