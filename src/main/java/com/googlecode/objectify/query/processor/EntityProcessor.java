@@ -81,7 +81,7 @@ public class EntityProcessor extends AbstractProcessor {
       out = new PrintWriter(
           new BufferedWriter(this.env.getFiler().createSourceFile(queryQName,
               entityElement).openWriter()));
-      
+
       // this.env.getMessager().printMessage(Kind.ERROR, entityName);
 
       out.println("package " + queryPackageName + ";");
@@ -96,15 +96,28 @@ public class EntityProcessor extends AbstractProcessor {
       out.println("import com.googlecode.objectify.ObjectifyOpts;");
       out.println("import com.googlecode.objectify.ObjectifyService;");
       out.println("import com.googlecode.objectify.Query;");
-      out.println("import com.googlecode.objectify.helper.QueryWrapper;");
+      try {
+        // objectify 3.x
+        Class.forName("com.googlecode.objectify.util.QueryWrapper");
+        out.println("import com.googlecode.objectify.util.QueryWrapper;");
+      } catch (ClassNotFoundException e) {
+        try {
+          // objectify 2.x
+          Class.forName("com.googlecode.objectify.helper.QueryWrapper");
+          out.println("import com.googlecode.objectify.helper.QueryWrapper;");
+        } catch (ClassNotFoundException e1) {
+          env.getMessager().printMessage(Kind.ERROR,
+              "Could not find QueryWrapper class");
+        }
+      }
       out.println("import com.googlecode.objectify.query.shared.ListPage;");
       out.println("import " + entityPackageName + "." + entityName + ";");
       out.println();
       out.println("public class " + queryName + " extends QueryWrapper<"
           + entityName + "> { ");
       out.println();
-      out.println("private final Query<" + entityName + "> query;");
-      out.println("private Objectify lazyOfy;");
+      out.println("  private final Query<" + entityName + "> query;");
+      out.println("  private Objectify lazyOfy;");
       out.println();
       out.println("  public " + queryName + "(Query<" + entityName
           + "> query) {");
@@ -135,10 +148,11 @@ public class EntityProcessor extends AbstractProcessor {
           // // @Transient field
         } else if (unindexedClass != null && indexedField == null) {
           // @Unindexed class and field is not @Indexed
-        } else {          
-          String fieldName = fieldElement.getSimpleName().toString();                              
-          String fieldType = env.getTypeUtils().asMemberOf((DeclaredType)entityElement.asType(), fieldElement).toString();
-          
+        } else {
+          String fieldName = fieldElement.getSimpleName().toString();
+          String fieldType = env.getTypeUtils().asMemberOf(
+              (DeclaredType) entityElement.asType(), fieldElement).toString();
+
           out.println("  public " + queryName + " filterBy"
               + fieldName.substring(0, 1).toUpperCase()
               + fieldName.substring(1) + "(" + fieldType + " " + fieldName
@@ -203,9 +217,9 @@ public class EntityProcessor extends AbstractProcessor {
           + ">>(list, iterator.getCursor().toWebSafeString(), more);");
       out.println("  }");
 
-      
       if (parentField != null) {
-        String fieldType = env.getTypeUtils().asMemberOf((DeclaredType)entityElement.asType(), parentField).toString();
+        String fieldType = env.getTypeUtils().asMemberOf(
+            (DeclaredType) entityElement.asType(), parentField).toString();
         fieldType = fieldType.substring(fieldType.indexOf('<') + 1,
             fieldType.lastIndexOf('>'));
 
@@ -322,7 +336,6 @@ public class EntityProcessor extends AbstractProcessor {
                 + ">(new ArrayList<" + returnType + ">(");
             out.println("      list.values()), iterator.getCursor().toWebSafeString(), more);");
             out.println("  }");
-            
           }
         }
       }
