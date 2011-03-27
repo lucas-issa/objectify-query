@@ -106,6 +106,13 @@ public class ListPage<Entity_> implements Iterable<Entity_>, RandomAccess, IsSer
 		return this.cursor;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 *   <code>true</code> if there are more results still available to be returned from the query.<br/>
+	 *   <code>false</code> if this page is the last page.
+	 * 
+	 */
 	public boolean more() {
 		return this.more;
 	}
