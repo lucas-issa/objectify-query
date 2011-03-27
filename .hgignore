@@ -1,6 +1,4 @@
-
-syntax: regexp
-^bin$
-syntax: regexp
-^target$
+bin
+target
 .classpath
+.settings
