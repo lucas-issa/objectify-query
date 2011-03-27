@@ -5,6 +5,15 @@
 	<groupId>com.googlecode.objectify.query</groupId>
 	<artifactId>objectify-query</artifactId>
 	<version>0.1.0</version>
+	<packaging>jar</packaging>
+
+	<name>objectify-query</name>
+	<description>
+		objectify-query is a JSR 269 annotation processor that processes objectify-appengine's 
+		annotations to generate "safer" query classes.  The generated query class provides 
+		type-safe methods to filter each of the entities indexed properties
+	</description>
+	<url>http://http://code.google.com/p/objectify-query</url>
 
 	<licenses>
 		<license>
@@ -14,7 +23,24 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
+
+    <scm>
+        <connection>scm:hg:http://objectify-query.googlecode.com/hg/</connection>
+        <developerConnection>scm:hg:https://objectify-query.googlecode.com/hg/</developerConnection>
+        <url>http://code.google.com/p/objectify-query/source/browse/</url>
+    </scm>
 	
+    <issueManagement>
+      <system>Google Code</system>
+      <url>http://code.google.com/p/objectify-query/issues</url>
+    </issueManagement>	
+
+	<developers>
+		<developer>
+			<name>Brendan Doherty</name>
+		</developer>
+	</developers>
+
 	<properties>
 		<target.jdk>1.6</target.jdk>
 
