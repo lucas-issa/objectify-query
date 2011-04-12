@@ -17,6 +17,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.ElementFilter;
+import javax.persistence.Transient;
 import javax.tools.Diagnostic.Kind;
 
 import com.googlecode.objectify.annotation.Entity;
@@ -130,8 +131,7 @@ public class EntityProcessor extends AbstractProcessor {
           (TypeElement) entityElement))) {
 
         Unindexed unindexedField = fieldElement.getAnnotation(Unindexed.class);
-        // Transient transientField =
-        // fieldElement.getAnnotation(Transient.class);
+        Transient transientField = fieldElement.getAnnotation(Transient.class);
         NotSaved notSavedField = fieldElement.getAnnotation(NotSaved.class);
         Indexed indexedField = fieldElement.getAnnotation(Indexed.class);
 
@@ -144,7 +144,7 @@ public class EntityProcessor extends AbstractProcessor {
           // @Unindexed field without If... parameter
         } else if (notSavedField != null) {
           // @NotSaved field
-          // } else if(transientField != null) {
+        } else if(transientField != null) {
           // // @Transient field
         } else if (unindexedClass != null && indexedField == null) {
           // @Unindexed class and field is not @Indexed
