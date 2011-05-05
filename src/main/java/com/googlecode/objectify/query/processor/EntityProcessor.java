@@ -114,6 +114,7 @@ public class EntityProcessor extends AbstractProcessor {
       out.println("import com.googlecode.objectify.query.shared.ListPage;");
       out.println("import " + entityPackageName + "." + entityName + ";");
       out.println();
+      out.println("/** Query generated using " + entityPackageName + "." + entityName + " */");
       out.println("public class " + queryName + " extends QueryWrapper<"
           + entityName + "> { ");
       out.println();
