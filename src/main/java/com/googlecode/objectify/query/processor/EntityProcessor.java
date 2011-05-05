@@ -138,46 +138,50 @@ public class EntityProcessor extends AbstractProcessor {
         Parent parent = fieldElement.getAnnotation(Parent.class);
         if (parentField == null && parent != null) {
           parentField = fieldElement;
-        }
-
-        if (unindexedField != null && unindexedField.value().length == 0) {
-          // @Unindexed field without If... parameter
-        } else if (notSavedField != null) {
-          // @NotSaved field
-        } else if(transientField != null) {
-          // // @Transient field
-        } else if (unindexedClass != null && indexedField == null) {
-          // @Unindexed class and field is not @Indexed
         } else {
-          String fieldName = fieldElement.getSimpleName().toString();
-          String fieldType = env.getTypeUtils().asMemberOf(
-              (DeclaredType) entityElement.asType(), fieldElement).toString();
+          if (unindexedField != null && unindexedField.value().length == 0) {
+            // @Unindexed field without If... parameter
+           continue;
+          } else if (notSavedField != null) {
+            // @NotSaved field
+            continue;
+          } else if(transientField != null) {
+            // @Transient field
+            continue;
+          } else if (unindexedClass != null && indexedField == null) {
+            // @Unindexed class and field is not @Indexed
+            continue;
+          }
+        }
+		
+        String fieldName = fieldElement.getSimpleName().toString();
+        String fieldType = env.getTypeUtils().asMemberOf(
+            (DeclaredType) entityElement.asType(), fieldElement).toString();
 
+        out.println("  public " + queryName + " filterBy"
+            + fieldName.substring(0, 1).toUpperCase()
+            + fieldName.substring(1) + "(" + fieldType + " " + fieldName
+            + ") {");
+        if (parent != null) {
+          out.println("    this.query.ancestor(" + fieldName + ");");
+          out.println("    return this;");
+        } else {
+          out.println("    this.query.filter(\"" + fieldName + "\", "
+              + fieldName + ");");
+          out.println("    return this;");
+        }
+        out.println("  }");
+        out.println();
+
+        if (parent == null) {
           out.println("  public " + queryName + " filterBy"
               + fieldName.substring(0, 1).toUpperCase()
-              + fieldName.substring(1) + "(" + fieldType + " " + fieldName
-              + ") {");
-          if (parent != null) {
-            out.println("    this.query.ancestor(" + fieldName + ");");
-            out.println("    return this;");
-          } else {
-            out.println("    this.query.filter(\"" + fieldName + "\", "
-                + fieldName + ");");
-            out.println("    return this;");
-          }
+              + fieldName.substring(1) + "(String operation, Object value) {");
+          out.println("    this.query.filter(\"" + fieldName
+              + " \" + operation, value);");
+          out.println("    return this;");
           out.println("  }");
           out.println();
-
-          if (parent == null) {
-            out.println("  public " + queryName + " filterBy"
-                + fieldName.substring(0, 1).toUpperCase()
-                + fieldName.substring(1) + "(String operation, Object value) {");
-            out.println("    this.query.filter(\"" + fieldName
-                + " \" + operation, value);");
-            out.println("    return this;");
-            out.println("  }");
-            out.println();
-          }
         }
       }
 
