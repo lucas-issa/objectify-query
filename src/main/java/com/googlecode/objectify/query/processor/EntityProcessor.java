@@ -40,28 +40,26 @@ public class EntityProcessor extends AbstractProcessor {
 
     this.env = env;
   }
-
+    
   @Override
   public boolean process(Set<? extends TypeElement> annotations,
       RoundEnvironment roundEnv) {
 
     if (!roundEnv.processingOver()) {
 
-      for (TypeElement currAnnotation : annotations) {
-
-        if (currAnnotation.getQualifiedName().contentEquals(
-            Entity.class.getName())) {
-
-          for (Element entity : roundEnv.getElementsAnnotatedWith(currAnnotation)) {
-            this.processEntity(entity);
-          }
-
-        }
+      printMessage(Kind.NOTE, "com.googlecode.objectify.query.EntityProcessor started.");
+      printMessage(Kind.NOTE, "Searching for @Entity annotations.");    	
+      for (Element entity : roundEnv.getElementsAnnotatedWith(Entity.class)) {
+        printMessage(Kind.NOTE, "Found " + entity.toString() + ".");
+        this.processEntity(entity);
       }
-
     }
 
-    return true;
+    return false;
+  }
+  
+  private void printMessage(Kind kind, String msg) {
+	  this.env.getMessager().printMessage(kind, msg);
   }
 
   private void processEntity(Element entityElement) {
@@ -73,6 +71,8 @@ public class EntityProcessor extends AbstractProcessor {
     String queryPackageName = entityPackageName.replaceAll("\\.shared\\.",
         ".server.");
     String queryQName = queryPackageName + "." + queryName;
+    
+    printMessage(Kind.NOTE, "Generating '" + queryName + "' from '" + entityName + "'.");
 
     Unindexed unindexedClass = entityElement.getAnnotation(Unindexed.class);
 
@@ -109,6 +109,9 @@ public class EntityProcessor extends AbstractProcessor {
         } catch (ClassNotFoundException e1) {
           env.getMessager().printMessage(Kind.ERROR,
               "Could not find QueryWrapper class");
+        } catch (NoClassDefFoundError e2) {
+            env.getMessager().printMessage(Kind.ERROR,
+                    "Could not find QueryWrapper class");        	
         }
       }
       out.println("import com.googlecode.objectify.query.shared.ListPage;");

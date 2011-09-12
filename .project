@@ -1,17 +1,19 @@
 <projectDescription>
   <name>objectify-query</name>
-  <comment>NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <comment>objectify-query is a JSR 269 annotation processor that processes objectify-appengine&apos;s 
+		annotations to generate &quot;safer&quot; query classes.  The generated query class provides 
+		type-safe methods to filter each of the entities indexed properties. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
     </buildCommand>
     <buildCommand>
-      <name>org.maven.ide.eclipse.maven2Builder</name>
+      <name>org.eclipse.m2e.core.maven2Builder</name>
     </buildCommand>
   </buildSpec>
   <natures>
     <nature>org.eclipse.jdt.core.javanature</nature>
-    <nature>org.maven.ide.eclipse.maven2Nature</nature>
+    <nature>org.eclipse.m2e.core.maven2Nature</nature>
   </natures>
 </projectDescription>
