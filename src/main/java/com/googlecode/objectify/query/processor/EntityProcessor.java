@@ -13,6 +13,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -20,7 +21,6 @@ import javax.lang.model.util.ElementFilter;
 import javax.persistence.Transient;
 import javax.tools.Diagnostic.Kind;
 
-import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Indexed;
 import com.googlecode.objectify.annotation.NotSaved;
 import com.googlecode.objectify.annotation.Parent;
@@ -28,7 +28,8 @@ import com.googlecode.objectify.annotation.Unindexed;
 import com.googlecode.objectify.query.annotation.List;
 import com.googlecode.objectify.query.annotation.List.KeyType;
 
-@SupportedAnnotationTypes("com.googlecode.objectify.annotation.Entity")
+@SupportedAnnotationTypes({
+    "com.googlecode.objectify.annotation.Entity", "javax.persistence.Entity"})
 @SupportedSourceVersion(RELEASE_6)
 public class EntityProcessor extends AbstractProcessor {
 
@@ -40,7 +41,7 @@ public class EntityProcessor extends AbstractProcessor {
 
     this.env = env;
   }
-    
+
   @Override
   public boolean process(Set<? extends TypeElement> annotations,
       RoundEnvironment roundEnv) {
@@ -48,18 +49,23 @@ public class EntityProcessor extends AbstractProcessor {
     if (!roundEnv.processingOver()) {
 
       printMessage(Kind.NOTE, "com.googlecode.objectify.query.EntityProcessor started.");
-      printMessage(Kind.NOTE, "Searching for @Entity annotations.");    	
-      for (Element entity : roundEnv.getElementsAnnotatedWith(Entity.class)) {
-        printMessage(Kind.NOTE, "Found " + entity.toString() + ".");
-        this.processEntity(entity);
+      printMessage(Kind.NOTE, "Searching for @Entity annotations.");
+      for (TypeElement currAnnotation : annotations) {
+    	  final Name qualifiedName = currAnnotation.getQualifiedName();
+    	  if (qualifiedName.contentEquals("com.googlecode.objectify.annotation.Entity")
+    			  || qualifiedName.contentEquals("javax.persistence.Entity")) {
+    	      for (Element entity : roundEnv.getElementsAnnotatedWith(currAnnotation)) {
+    	          printMessage(Kind.NOTE, "Found " + entity.toString() + ".");
+    	          this.processEntity(entity);
+    	      }
+    	  }
       }
     }
-
     return false;
   }
-  
+
   private void printMessage(Kind kind, String msg) {
-	  this.env.getMessager().printMessage(kind, msg);
+    this.env.getMessager().printMessage(kind, msg);
   }
 
   private void processEntity(Element entityElement) {
@@ -71,8 +77,9 @@ public class EntityProcessor extends AbstractProcessor {
     String queryPackageName = entityPackageName.replaceAll("\\.shared\\.",
         ".server.");
     String queryQName = queryPackageName + "." + queryName;
-    
-    printMessage(Kind.NOTE, "Generating '" + queryName + "' from '" + entityName + "'.");
+
+    printMessage(Kind.NOTE, "Generating '" + queryName + "' from '"
+        + entityName + "'.");
 
     Unindexed unindexedClass = entityElement.getAnnotation(Unindexed.class);
 
@@ -110,14 +117,15 @@ public class EntityProcessor extends AbstractProcessor {
           env.getMessager().printMessage(Kind.ERROR,
               "Could not find QueryWrapper class");
         } catch (NoClassDefFoundError e2) {
-            env.getMessager().printMessage(Kind.ERROR,
-                    "Could not find QueryWrapper class");        	
+          env.getMessager().printMessage(Kind.ERROR,
+              "Could not find QueryWrapper class");
         }
       }
       out.println("import com.googlecode.objectify.query.shared.ListPage;");
       out.println("import " + entityPackageName + "." + entityName + ";");
       out.println();
-      out.println("/** Query generated using " + entityPackageName + "." + entityName + " */");
+      out.println("/** Query generated using " + entityPackageName + "."
+          + entityName + " */");
       out.println("public class " + queryName + " extends QueryWrapper<"
           + entityName + "> { ");
       out.println();
@@ -145,11 +153,11 @@ public class EntityProcessor extends AbstractProcessor {
         } else {
           if (unindexedField != null && unindexedField.value().length == 0) {
             // @Unindexed field without If... parameter
-           continue;
+            continue;
           } else if (notSavedField != null) {
             // @NotSaved field
             continue;
-          } else if(transientField != null) {
+          } else if (transientField != null) {
             // @Transient field
             continue;
           } else if (unindexedClass != null && indexedField == null) {
@@ -157,15 +165,14 @@ public class EntityProcessor extends AbstractProcessor {
             continue;
           }
         }
-		
+
         String fieldName = fieldElement.getSimpleName().toString();
         String fieldType = env.getTypeUtils().asMemberOf(
             (DeclaredType) entityElement.asType(), fieldElement).toString();
 
         out.println("  public " + queryName + " filterBy"
-            + fieldName.substring(0, 1).toUpperCase()
-            + fieldName.substring(1) + "(" + fieldType + " " + fieldName
-            + ") {");
+            + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1)
+            + "(" + fieldType + " " + fieldName + ") {");
         if (parent != null) {
           out.println("    this.query.ancestor(" + fieldName + ");");
           out.println("    return this;");
