@@ -20,7 +20,7 @@
 		annotations to generate "safer" query classes.  The generated query class provides 
 		type-safe methods to filter each of the entities indexed properties
 	</description>
-	<url>http://http://code.google.com/p/objectify-query</url>
+	<url>http://code.google.com/p/objectify-query</url>
 
 	<licenses>
 		<license>
